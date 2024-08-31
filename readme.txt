@@ -1,3 +1,5 @@
+1 module:
+
 Для запуска сервера:
 1) Установить Python
 2) Установка зависимостей
@@ -32,3 +34,17 @@
 		1) Открыть консоль в корневой папке и ввести команды по очереди:
 		cd .\trains\swagger\
 		npm start
+
+2 module:
+
+(Считаю что далее не нужно указывать вариант с .venv при использовании Python)
+1) Обновить зависимости
+	a) Прописать в корневой папке:
+	pip install -r requirements.txt
+2) Создать свою бд (CREATE DATABASE name в SQL SHELL)
+3) В .\trains\trains\settings.py в 81:90 (параметр DATABASES) строчках необходимо заполнить данные о своей бд.
+4) Очистить папку .\trains\api\migrations\ оставив там только __init__.py
+5) Из корневой папки переходим в .\trains\ и вводим последовательно команды:
+python .\manage.py makemigrations
+python .\manage.py migrate
+python .\manage.py loaddata .\fixtures\data.json
