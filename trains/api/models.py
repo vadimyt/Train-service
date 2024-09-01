@@ -13,6 +13,10 @@ class Cities(models.Model):
     class Meta:
         # managed = False
         db_table = 'cities'
+        verbose_name_plural = "cities"
+    
+    def __str__(self):
+        return f"Name: {self.name}"
 
 class Trains(models.Model):
     name = models.CharField()
@@ -21,6 +25,10 @@ class Trains(models.Model):
     class Meta:
         # managed = False
         db_table = 'trains'
+        verbose_name_plural = "trains"
+
+    def __str__(self):
+        return f"Name: {self.name}, Seats: {self.count_seat}"
 
 class TrainRoutes(models.Model):
     train = models.ForeignKey('Trains', models.DO_NOTHING, db_column='train', blank=True, null=True)
@@ -33,6 +41,10 @@ class TrainRoutes(models.Model):
     class Meta:
         # managed = False
         db_table = 'train_routes'
+        verbose_name_plural = "train_routes"
+    
+    def __str__(self):
+        return f"Train: {self.train}, from time: {self.from_time}, to time: {self.to_time}, from city: {self.from_city}, to city: {self.to_city}, cost: {self.cost}"
 
 class Tickets(models.Model):
     train_route = models.ForeignKey('TrainRoutes', models.DO_NOTHING, db_column='train_route', blank=True, null=True)
@@ -40,3 +52,7 @@ class Tickets(models.Model):
     class Meta:
         # managed = False
         db_table = 'tickets'
+        verbose_name_plural = "tickets"
+
+    def __str__(self):
+        return f"Train route: {self.train_route}"
