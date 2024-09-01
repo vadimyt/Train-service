@@ -86,4 +86,19 @@ http://127.0.0.1:8000/api/tickets
     "user": 3
 }
 
+module 5:
 
+1) Заполнить поля в settings.py данными от почтового сервера
+2) python .\manage.py makemigrations
+3) Теперь для регистрации аккаунта поле "username" не обязательно, вместо этого используется email. Например для регистрации можно написать такой пост запрос по адрессу http://127.0.0.1:8000/security/registration/
+{
+    "email": "example@example.ru",
+    "password1": "TestAdmin",
+    "password2": "TestAdmin"
+}
+4) Подтвердить свою почту перейдя по ссылке в сообщении
+5) Войти в созданный аккаунт через пост запрос по пути http://127.0.0.1:8000/security/login/
+{
+    "email": "example@example.ru",
+    "password": "TestAdmin"
+}
