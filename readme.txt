@@ -90,6 +90,7 @@ module 5:
 
 1) Заполнить поля в settings.py данными от почтового сервера
 2) python .\manage.py makemigrations
+pip install -r requirements.txt
 3) Теперь для регистрации аккаунта поле "username" не обязательно, вместо этого используется email. Например для регистрации можно написать такой пост запрос по адрессу http://127.0.0.1:8000/security/registration/
 {
     "email": "example@example.ru",
@@ -102,3 +103,6 @@ module 5:
     "email": "example@example.ru",
     "password": "TestAdmin"
 }
+
+P.S.
+Теперь swagger не нужно запускать отдельно, достаточно перейти по пути http://127.0.0.1:8000/swagger/ после запуска сервера.

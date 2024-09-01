@@ -6,6 +6,7 @@ from .serializers import *
 from rest_framework.views import APIView
 from django.http import Http404
 from datetime import datetime, timezone
+from drf_yasg.utils import swagger_auto_schema
 # Create your views here.
 
 def get_train_route_object(pk):
@@ -27,6 +28,7 @@ def get_ticket_object(pk):
             raise Http404
 
 class TrainRoutesView(APIView):
+    @swagger_auto_schema(operation_description="Get train routes", query_serializer=TrainRouteDefaultSerializer, responses={200: TrainRouteSerializer(many=True)})
     def get(self, request, format=None):
         trainroutes = TrainRoutes.objects.all()
         if (len(request.query_params)):
@@ -57,24 +59,28 @@ class TrainRoutesView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class TrainRouteView(APIView):
+    @swagger_auto_schema(operation_description="Get single train route", responses={200: TrainRouteSerializer()})
     def get(self, request, pk, format=None):
         trainroute = get_train_route_object(pk)          
         serializer = TrainRouteSerializer(trainroute)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class CitiesView(APIView):
+    @swagger_auto_schema(operation_description="Get cities", responses={200: CitySerializer(many=True)})
     def get(self, request, format=None):
         cities = Cities.objects.all()
         serializer = CitySerializer(cities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class CityView(APIView):
+    @swagger_auto_schema(operation_description="Get city", responses={200: CitySerializer()})
     def get(self, request, pk, format=None):
         city = get_city_object(pk)   
         serializer = CitySerializer(city)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class TicketsView(APIView):
+    @swagger_auto_schema(operation_description="Get tickets", responses={200: TicketSerializer(many=True), 401: "status.HTTP_401_UNAUTHORIZED"})
     def get(self, request, format=None):
         if request.user.is_authenticated:
             tickets = Tickets.objects.all().filter(user=request.user)
@@ -82,7 +88,8 @@ class TicketsView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-    
+        
+    @swagger_auto_schema(request_body=TicketDefaultSerializer)
     def post(self, request, format=None):
         if request.user.is_authenticated:
             serializer = TicketDefaultSerializer(data=request.data)
@@ -99,6 +106,7 @@ class TicketsView(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
     
 class TicketView(APIView):
+    @swagger_auto_schema(operation_description="Get ticket", responses={200: TicketSerializer(), 401: "status.HTTP_401_UNAUTHORIZED", 405: "status.HTTP_405_METHOD_NOT_ALLOWED"})
     def get(self, request, pk, format=None):
         if request.user.is_authenticated:
             ticket = get_ticket_object(pk)
@@ -110,6 +118,7 @@ class TicketView(APIView):
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
     
+    @swagger_auto_schema(operation_description="Delete ticket", responses={204: "status.HTTP_204_NO_CONTENT", 401: "status.HTTP_401_UNAUTHORIZED", 405: "status.HTTP_405_METHOD_NOT_ALLOWED"})
     def delete(self, request, pk, format=None):
         if request.user.is_authenticated:
             ticket = get_ticket_object(pk)
