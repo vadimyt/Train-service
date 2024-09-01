@@ -48,3 +48,15 @@
 python .\manage.py makemigrations
 python .\manage.py migrate
 python .\manage.py loaddata .\fixtures\data.json
+
+
+3 module:
+
+Созданы 2 аккаунта log: admin, pas: admin и log: RouteMod, pas: TestAdmin
+1) Очистить бд и загрузить фикстуры 
+python .\manage.py loaddata .\fixtures\data.json
+2) Запустить сервер
+python manage.py runserver
+3) Перейти по ссылке:
+http://127.0.0.1:8000/admin/
+4) Ввести данные аккаунта или супер админа или администратор расписания
