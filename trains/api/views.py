@@ -76,32 +76,50 @@ class CityView(APIView):
     
 class TicketsView(APIView):
     def get(self, request, format=None):
-        tickets = Tickets.objects.all()
-        serializer = TicketSerializer(tickets, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if request.user.is_authenticated:
+            tickets = Tickets.objects.all().filter(user=request.user)
+            serializer = TicketSerializer(tickets, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
     
     def post(self, request, format=None):
-        serializer = TicketDefaultSerializer(data=request.data)
-        if serializer.is_valid():
-            if (get_train_route_object(request.data['train_route']).from_time <= datetime.now(timezone.utc)):
-                data = {"Error":"train_route time is up"}
-                return Response(data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-            else:
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated:
+            serializer = TicketDefaultSerializer(data=request.data)
+            if serializer.is_valid():
+                if (get_train_route_object(request.data['train_route']).from_time <= datetime.now(timezone.utc)):
+                    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+                elif (request.user.id != request.data['user']):
+                    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+                else:
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
     
 class TicketView(APIView):
     def get(self, request, pk, format=None):
-        ticket = get_ticket_object(pk)
-        serializer = TicketSerializer(ticket)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if request.user.is_authenticated:
+            ticket = get_ticket_object(pk)
+            if (ticket.user == request.user):
+                serializer = TicketSerializer(ticket)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
     
     def delete(self, request, pk, format=None):
-        ticket = get_ticket_object(pk)
-        if (ticket.train_route != None):
-            if (ticket.train_route.from_time <= datetime.now(timezone.utc)):
-                data = {"Error":"train_route time is up"}
-                return Response(data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        ticket.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.user.is_authenticated:
+            ticket = get_ticket_object(pk)
+            if (ticket.train_route != None):
+                if (ticket.train_route.from_time <= datetime.now(timezone.utc)):
+                    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            else:
+                if (ticket.user != request.user):
+                    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            ticket.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)

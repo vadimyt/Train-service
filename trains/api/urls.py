@@ -7,5 +7,5 @@ urlpatterns = [
     path("cities", views.CitiesView.as_view(), name="cities"),
     path("cities/<int:pk>", views.CityView.as_view(), name="city"),
     path("tickets", views.TicketsView.as_view(), name="tickets"),
-    path("ticket/<int:pk>", views.TicketView.as_view(), name="ticket"),
+    path("tickets/<int:pk>", views.TicketView.as_view(), name="ticket"),
 ]

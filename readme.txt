@@ -1,4 +1,4 @@
-1 module:
+module 1:
 
 Для запуска сервера:
 1) Установить Python
@@ -35,7 +35,7 @@
 		cd .\trains\swagger\
 		npm start
 
-2 module:
+module 2:
 
 (Считаю что далее не нужно указывать вариант с .venv при использовании Python)
 1) Обновить зависимости
@@ -50,7 +50,7 @@ python .\manage.py migrate
 python .\manage.py loaddata .\fixtures\data.json
 
 
-3 module:
+module 3:
 
 Созданы 2 аккаунта log: admin, pas: admin и log: RouteMod, pas: TestAdmin
 1) Очистить бд и загрузить фикстуры 
@@ -60,3 +60,30 @@ python manage.py runserver
 3) Перейти по ссылке:
 http://127.0.0.1:8000/admin/
 4) Ввести данные аккаунта или супер админа или администратор расписания
+
+module 4:
+
+1) Ввести стандартные команды для обновления:
+pip install -r requirements.txt
+python .\manage.py makemigrations
+python .\manage.py migrate
+python .\manage.py loaddata .\fixtures\data.json
+2) Запустить сервер
+3) Регистрация нового пользователя
+Отправляем пост запрос с данными аккаунта по пути:
+http://127.0.0.1:8000/security/registration/
+Например:
+{
+    "username": "TestUser2",
+    "password1": "TestAdmin",
+    "password2": "TestAdmin"
+}
+4) Скопировать access токен и теперь можно "купить" билет, для этого сделать пост запрос по пути:
+http://127.0.0.1:8000/api/tickets
+Например:
+{
+    "train_route": 2,
+    "user": 3
+}
+
+

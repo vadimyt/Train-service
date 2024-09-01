@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from datetime import datetime, timezone
+from django.conf import settings
 from django.db import models
 from django.forms import ValidationError
 
@@ -75,6 +76,7 @@ class TrainRoutes(models.Model):
 
 class Tickets(models.Model):
     train_route = models.ForeignKey('TrainRoutes', models.DO_NOTHING, db_column='train_route', blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, db_column='user', blank=True, null=True)
 
     class Meta:
         # managed = False

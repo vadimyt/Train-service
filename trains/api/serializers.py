@@ -17,10 +17,9 @@ class TrainRouteSerializer(serializers.ModelSerializer):
     # cities_count = serializers.SerializerMethodField()
     from_city = serializers.SerializerMethodField()
     remaining_seats = serializers.SerializerMethodField()
-    is_purchased = serializers.SerializerMethodField()
     class Meta:
         model = TrainRoutes
-        fields = ["id","from_city","from_time","to_city","to_time","cost","remaining_seats",'is_purchased']
+        fields = ["id","from_city","from_time","to_city","to_time","cost","remaining_seats"]
         # fields = '__all__'
 
     def get_remaining_seats(self, obj):
@@ -31,10 +30,6 @@ class TrainRouteSerializer(serializers.ModelSerializer):
     
     def get_from_city(self, obj):
         return obj.from_city.name
-    
-    def get_is_purchased(self, obj):
-        tmp = len(Tickets.objects.filter(train_route=obj.id))
-        return True if tmp > 0 else False
     
 class TrainRouteDefaultSerializer(serializers.ModelSerializer):
     class Meta:
