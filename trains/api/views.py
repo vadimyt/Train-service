@@ -41,16 +41,18 @@ class TrainRoutesView(APIView):
                 trainroutes = trainroutes.filter(from_city = from_city)
 
             from_time = self.request.query_params.get('from_time')
-            if from_time:
-                trainroutes = trainroutes.filter(from_time = from_time)
+            if from_time:                
+                from_time = (datetime.fromisoformat(from_time))
+                trainroutes = trainroutes.filter(from_time__day = from_time.day, from_time__month = from_time.month, from_time__year = from_time.year)
 
             to_city = self.request.query_params.get('to_city')
             if to_city:
                 trainroutes = trainroutes.filter(to_city = to_city)
 
             to_time = self.request.query_params.get('to_time')
-            if to_time:
-                trainroutes = trainroutes.filter(from_time = from_time)
+            if to_time:                
+                to_time = (datetime.fromisoformat(to_time))
+                trainroutes = trainroutes.filter(to_time__day = to_time.day, to_time__month = to_time.month, to_time__year = to_time.year)
 
             cost = self.request.query_params.get('cost')
             if cost:
